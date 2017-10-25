@@ -22,6 +22,15 @@ let rec apply_env (var:string) (env:(string*Value.value) list) =
         apply_env var env_
 ;;
 
+let rec apply_env_nameless (dep:int) (env:(string*Value.value) list) =
+  match env with
+  | [] -> raise NoBindingFound
+  | e :: env_ ->
+      if dep = 0 then
+        let (_, v) = e in v
+      else apply_env_nameless (dep - 1) env_
+;;
+
 let rec print_env env =
   match env with
   | [] -> ();

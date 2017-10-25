@@ -21,31 +21,31 @@ let rec extend_env_params params args env =
 
 let rec eval_exp exp_ast env =
   match exp_ast with
-  | Plus (left, right) ->
+  | PlusNL (left, right) ->
       IntVal ((int_val (eval_exp left env))
       + (int_val (eval_exp right env)))
-  | Minus (left, right) ->
+  | MinusNL (left, right) ->
       IntVal ((int_val (eval_exp left env))
       - (int_val (eval_exp right env)))
-  | Times (left, right) ->
+  | TimesNL (left, right) ->
       IntVal ((int_val (eval_exp left env))
       * (int_val (eval_exp right env)))
-  | Div (left, right) ->
+  | DivNL (left, right) ->
       IntVal ((int_val (eval_exp left env))
       / (int_val (eval_exp right env)))
-  | IntLit (n) ->
+  | IntLitNL (n) ->
       IntVal (n)
-  | BoolLit (b) ->
+  | BoolLitNL (b) ->
       BoolVal (b)
-  | Let (id, e, body) ->
+  | LetNL (id, e, body) ->
       eval_exp body (extend_env id (eval_exp e env) env)
-  | Proc (params, body) ->
+  | ProcNL (params, body) ->
       ProcVal (params, body, env)
-  | Letrec (id, params, pbody, retrec_body) ->
+  | LetrecNL (id, params, pbody, retrec_body) ->
       let rec new_env = (id, v) :: env
       and v = ProcVal (params, pbody, new_env) in
       eval_exp retrec_body new_env
-  | Call (proc, args) ->
+  | CallNL (proc, args) ->
       let proc_ = eval_exp proc env in
       match proc_ with
       | ProcVal (params, body, env) ->
@@ -53,13 +53,13 @@ let rec eval_exp exp_ast env =
           eval_exp body (extend_env_params params args_ env)
       | _ -> raise WrongValue;
       ;
-  | If (test, conseq, alter) ->
+  | IfNL (test, conseq, alter) ->
       if bool_val (eval_exp test env) then
         eval_exp conseq env
       else
         eval_exp alter env
-  | Var (str) ->
-      apply_env str env
+  | LexVarNL (_, lexdep) ->
+      apply_env_nameless lexdep env
 and eval_exp_list lst env =
   match lst with
   | [] -> []
