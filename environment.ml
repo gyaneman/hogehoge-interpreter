@@ -11,14 +11,15 @@ let crt_loc_ptr = ref 0;;
 
 let newref (v:Value.value) =
   !global_space.(!crt_loc_ptr) <- v;
+  let ret = !crt_loc_ptr in
   crt_loc_ptr := (!crt_loc_ptr + 1);
-  !crt_loc_ptr
+  ret
 ;;
 let deref loc =
-  if !crt_loc_ptr < loc then
+  if loc < !crt_loc_ptr then
     !global_space.(loc)
   else
-    raise NoBindingFound
+    raise NoBindingFound;
 ;;
 let setref loc v =
   !global_space.(loc) <- v;
@@ -45,7 +46,8 @@ let extend_env_rec (id:string)
 
 let rec apply_env (var:string) (env:(string*int) list) =
   match env with
-  | [] -> raise NoBindingFound
+  | [] -> 
+      print_string "apply_env"; raise NoBindingFound;
   | e :: env_ ->
       let (var_, reference) = e in
       if var = var_ then
@@ -56,7 +58,8 @@ let rec apply_env (var:string) (env:(string*int) list) =
 
 let rec apply_env_nameless (dep:int) (env:(string*int) list) =
   match env with
-  | [] -> raise NoBindingFound
+  | [] ->
+      print_string "apply_env_nameless"; raise NoBindingFound;
   | e :: env_ ->
       if dep = 0 then
         let (_, reference) = e in reference
