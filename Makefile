@@ -26,6 +26,7 @@ CMOFILES= \
 CMIFILES = \
 				syntax.cmi \
 				value.cmi \
+				environment.cmi \
 				interp.cmi \
 				ast_printer.cmi
 
@@ -51,7 +52,7 @@ parser.mli: parser.mly
 parser.cmo: parser.ml parser.cmi
 	$(OCAMLC) $(OCAMLC_OPT) $<
 
-environment.cmi: environment.ml syntax.cmi
+environment.cmi: environment.mli syntax.cmi
 	$(OCAMLC) $(OCAMLC_OPT) $<
 
 ast_printer.cmo: ast_printer.ml $(CMIFILES)

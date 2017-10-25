@@ -5,7 +5,7 @@ type value =
   | IntVal of int
   | BoolVal of bool
   | StringVal of string
-  | ProcVal of string list * nameless_exp * (string*value) list
+  | ProcVal of string list * nameless_exp * (string*int) list
   | NullVal
 ;;
 

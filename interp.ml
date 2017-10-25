@@ -5,16 +5,17 @@ open Environment
 exception WrongValue
 
 
+
 let rec extend_env_params params args env =
   match params with
   | [] -> env
   | p :: params_ ->
       match args with
       | [] ->
-          let env_ = extend_env p NullVal env in
+          let env_ = extend_env p (newref NullVal) env in
           extend_env_params params_ [] env_
       | a :: args_ ->
-          let env_ = extend_env p a env in
+          let env_ = extend_env p (newref a) env in
           extend_env_params params_ args_ env_
 ;;
 
@@ -38,13 +39,14 @@ let rec eval_exp exp_ast env =
   | BoolLitNL (b) ->
       BoolVal (b)
   | LetNL (id, e, body) ->
-      eval_exp body (extend_env id (eval_exp e env) env)
+      let e_ = newref (eval_exp e env) in
+      eval_exp body (extend_env id e_ env)
   | ProcNL (params, body) ->
       ProcVal (params, body, env)
   | LetrecNL (id, params, pbody, retrec_body) ->
-      let rec new_env = (id, v) :: env
-      and v = ProcVal (params, pbody, new_env) in
-      eval_exp retrec_body new_env
+      (*let rec new_env = (id, newref v) :: env
+      and v = ProcVal (params, pbody, new_env) in*)
+      eval_exp retrec_body (extend_env_rec id params pbody env)
   | CallNL (proc, args) ->
       let proc_ = eval_exp proc env in
       match proc_ with
@@ -59,12 +61,10 @@ let rec eval_exp exp_ast env =
       else
         eval_exp alter env
   | LexVarNL (_, lexdep) ->
-      apply_env_nameless lexdep env
+      deref (apply_env_nameless lexdep env)
 and eval_exp_list lst env =
   match lst with
   | [] -> []
   | el :: lst_ -> eval_exp el env :: eval_exp_list lst_ env
 ;;
-
-
 

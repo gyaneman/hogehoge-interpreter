@@ -5,7 +5,7 @@ open Interp
 open Ast_printer
 
 
-let init_env = [("zero", IntVal (0))];;
+let init_env = [("zero", newref (IntVal (0)))];;
 
 let _ =
   try
