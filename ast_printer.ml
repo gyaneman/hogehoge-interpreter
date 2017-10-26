@@ -63,6 +63,10 @@ let rec to_json ast =
   | Var (str) ->
       type_prop "Var" ^ ", " ^
       prop "val" ("\"" ^ str ^ "\"")
+  | Set (dst, src) ->
+      type_prop "Set" ^ ", " ^
+      prop "dst" (to_json dst) ^ ", " ^
+      prop "src" (to_json src)
   ;
   ^ "}"
 and to_json_array lst =
@@ -145,6 +149,10 @@ let rec to_json_nameless ast =
       type_prop "VarNL" ^ ", " ^
       prop "val" ("\"" ^ str ^ "\"") ^ ", " ^
       prop "lexdep" (string_of_int lexdep)
+  | SetNL (dst, src) ->
+      type_prop "Set" ^ ", " ^
+      prop "dst" (to_json_nameless dst) ^ ", " ^
+      prop "src" (to_json_nameless src)
   ;
   ^ "}"
 and to_json_array_nameless lst =

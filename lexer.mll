@@ -29,6 +29,7 @@ rule token = parse
   | "if"    { IF }
   | "then"  { THEN }
   | "else"  { ELSE }
+  | "set"   { SET }
   | alpha alnum*  as str { IDENTIFIER (str) }
   | eof     { EOF }
   | _

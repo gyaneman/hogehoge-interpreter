@@ -10,6 +10,7 @@ open Syntax
 %token LPAREN RPAREN
 %token LET IN PROC LETREC
 %token IF THEN ELSE
+%token SET
 %token EQ
 %token EOF
 
@@ -75,6 +76,9 @@ exp:
   // if exp then exp else exp
   | IF exp THEN exp ELSE exp
     { If ($2, $4, $6) }
+
+  | SET exp EQ exp
+    { Set ($2, $4) }
 
   // variable
   | IDENTIFIER

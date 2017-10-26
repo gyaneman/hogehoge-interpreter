@@ -13,6 +13,7 @@ type exp =
   | Proc of string list * exp
   | Letrec of string * string list * exp * exp
   | Call of exp * exp list
+  | Set of exp * exp
 ;;
 
 type nameless_exp =
@@ -28,6 +29,7 @@ type nameless_exp =
   | ProcNL of string list * nameless_exp
   | LetrecNL of string * string list * nameless_exp * nameless_exp
   | CallNL of nameless_exp * nameless_exp list
+  | SetNL of nameless_exp * nameless_exp
 ;;
 
 

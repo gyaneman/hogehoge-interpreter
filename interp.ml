@@ -62,6 +62,12 @@ let rec eval_exp exp_ast env =
         eval_exp alter env
   | LexVarNL (_, lexdep) ->
       deref (apply_env_nameless lexdep env)
+  | SetNL (dst, src) ->
+      let src_val = eval_exp src env in
+      match dst with
+      | LexVarNL (_, lexdep) ->
+          setref lexdep src_val
+      | _ -> raise WrongValue;
 and eval_exp_list lst env =
   match lst with
   | [] -> []
