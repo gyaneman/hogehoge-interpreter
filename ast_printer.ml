@@ -67,6 +67,12 @@ let rec to_json ast =
       type_prop "Set" ^ ", " ^
       prop "dst" (to_json dst) ^ ", " ^
       prop "src" (to_json src)
+  | Ref (e) ->
+      type_prop "Ref" ^ ", " ^
+      prop "expr" (to_json e)
+  | Deref (ref) ->
+      type_prop "Deref" ^ ", " ^
+      prop "ref" (to_json ref)
   ;
   ^ "}"
 and to_json_array lst =
@@ -153,6 +159,12 @@ let rec to_json_nameless ast =
       type_prop "Set" ^ ", " ^
       prop "dst" (to_json_nameless dst) ^ ", " ^
       prop "src" (to_json_nameless src)
+  | RefNL (e) ->
+      type_prop "Ref" ^ ", " ^
+      prop "expr" (to_json_nameless e)
+  | DerefNL (ref) ->
+      type_prop "Deref" ^ ", " ^
+      prop "ref" (to_json_nameless ref)
   ;
   ^ "}"
 and to_json_array_nameless lst =

@@ -28,49 +28,52 @@ let setref loc v =
 
 
 let extend_env  (var:string)
-                (reference:int)
-                (env:(string*int) list) =
-  (var, reference) :: env
+                (v:Value.value)
+                (env:(string*Value.value) list) =
+  (var, v) :: env
 ;;
 
 let extend_env_rec (id:string)
                 (params:string list)
                 (pbody:nameless_exp)
-                (env:(string*int) list) =
-  let newref_tmp = newref NullVal in
+                (env:(string*Value.value) list) =
+  let rec new_env = (id, v) :: env
+  and v = ProcVal (params, pbody, new_env) in
+  new_env
+;;
+  (*let newref_tmp = newref NullVal in
   let new_env = (id, newref_tmp) :: env in
   let v = ProcVal (params, pbody, new_env) in
   setref newref_tmp v;
-  new_env;
-;;
+  new_env;*)
 
-let rec apply_env (var:string) (env:(string*int) list) =
+let rec apply_env (var:string) (env:(string*Value.value) list) =
   match env with
   | [] -> 
       print_string "apply_env"; raise NoBindingFound;
   | e :: env_ ->
-      let (var_, reference) = e in
+      let (var_, value_) = e in
       if var = var_ then
-        reference
+        value_
       else 
         apply_env var env_
 ;;
 
-let rec apply_env_nameless (dep:int) (env:(string*int) list) =
+let rec apply_env_nameless (dep:int) (env:(string*Value.value) list) =
   match env with
   | [] ->
       print_string "apply_env_nameless"; raise NoBindingFound;
   | e :: env_ ->
       if dep = 0 then
-        let (_, reference) = e in reference
+        let (_, value_) = e in value_
       else apply_env_nameless (dep - 1) env_
 ;;
 
 let rec print_env env =
   match env with
   | [] -> ();
-  | (var_, ref_) :: env_ ->
-      print_string ("(" ^ var_ ^ ", " ^ string_of_value (deref ref_) ^ ")\n");
+  | (var_, value_) :: env_ ->
+      print_string ("(" ^ var_ ^ ", " ^ string_of_value value_ ^ ")\n");
       print_env env_
 ;;
 

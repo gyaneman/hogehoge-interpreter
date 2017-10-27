@@ -14,6 +14,8 @@ type exp =
   | Letrec of string * string list * exp * exp
   | Call of exp * exp list
   | Set of exp * exp
+  | Ref of exp
+  | Deref of exp
 ;;
 
 type nameless_exp =
@@ -30,6 +32,8 @@ type nameless_exp =
   | LetrecNL of string * string list * nameless_exp * nameless_exp
   | CallNL of nameless_exp * nameless_exp list
   | SetNL of nameless_exp * nameless_exp
+  | RefNL of nameless_exp
+  | DerefNL of nameless_exp
 ;;
 
 

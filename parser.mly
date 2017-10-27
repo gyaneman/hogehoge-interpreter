@@ -4,13 +4,13 @@ open Syntax
 
 %token <string> IDENTIFIER
 %token <int> INT
-%token CAMMA
+%token CAMMA EXCL
 %token TRUE FALSE
 %token PLUS MINUS TIMES DIV
 %token LPAREN RPAREN
 %token LET IN PROC LETREC
 %token IF THEN ELSE
-%token SET
+%token REF SET
 %token EQ
 %token EOF
 
@@ -77,6 +77,15 @@ exp:
   | IF exp THEN exp ELSE exp
     { If ($2, $4, $6) }
 
+  // ref exp
+  | REF exp
+    { Ref ($2) }
+
+  // ! exp
+  | EXCL exp
+    { Deref ($2) }
+
+  // set exp = exp
   | SET exp EQ exp
     { Set ($2, $4) }
 

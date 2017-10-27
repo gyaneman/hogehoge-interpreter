@@ -20,16 +20,18 @@ rule token = parse
   | '('     { LPAREN }
   | ')'     { RPAREN }
   | '='     { EQ }
+  | '!'     { EXCL }
   | "true"  { TRUE }
   | "false" { FALSE }
   | "let"   { LET }
+  | "letrec"{ LETREC }
   | "in"    { IN }
   | "proc"  { PROC }
-  | "letrec"{ LETREC }
   | "if"    { IF }
   | "then"  { THEN }
   | "else"  { ELSE }
   | "set"   { SET }
+  | "ref"   { REF }
   | alpha alnum*  as str { IDENTIFIER (str) }
   | eof     { EOF }
   | _

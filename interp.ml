@@ -12,10 +12,10 @@ let rec extend_env_params params args env =
   | p :: params_ ->
       match args with
       | [] ->
-          let env_ = extend_env p (newref NullVal) env in
+          let env_ = extend_env p NullVal env in
           extend_env_params params_ [] env_
       | a :: args_ ->
-          let env_ = extend_env p (newref a) env in
+          let env_ = extend_env p a env in
           extend_env_params params_ args_ env_
 ;;
 
@@ -39,7 +39,7 @@ let rec eval_exp exp_ast env =
   | BoolLitNL (b) ->
       BoolVal (b)
   | LetNL (id, e, body) ->
-      let e_ = newref (eval_exp e env) in
+      let e_ = eval_exp e env in
       eval_exp body (extend_env id e_ env)
   | ProcNL (params, body) ->
       ProcVal (params, body, env)
@@ -61,13 +61,22 @@ let rec eval_exp exp_ast env =
       else
         eval_exp alter env
   | LexVarNL (_, lexdep) ->
-      deref (apply_env_nameless lexdep env)
+      apply_env_nameless lexdep env
   | SetNL (dst, src) ->
       let src_val = eval_exp src env in
-      match dst with
-      | LexVarNL (_, lexdep) ->
-          setref lexdep src_val
+      let dst_val = eval_exp dst env in
+      match dst_val with
+      | RefVal (loc) ->
+          setref loc src_val
       | _ -> raise WrongValue;
+      ;
+  | RefNL (e) ->
+      RefVal (newref (eval_exp e env))
+  | DerefNL (ref) ->
+      match eval_exp ref env with
+      | RefVal (loc) ->
+          deref loc
+      | _ -> raise WrongValue
 and eval_exp_list lst env =
   match lst with
   | [] -> []
